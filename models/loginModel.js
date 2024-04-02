@@ -1,6 +1,6 @@
 const { DataTypes, sequelize } = require('sequelize')
 const { login } = require('../controllers/loginController')
-
+const dbInstance=require('../configs/dbConfig')
 const login = dbInstance.define('login', {
     email: {
         type: DataTypes.STRING,
@@ -8,7 +8,7 @@ const login = dbInstance.define('login', {
         unique: true
     },
     password: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         allowNull: false
     }
 

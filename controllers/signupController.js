@@ -1,37 +1,34 @@
 const dotenv = require('dotenv').config();
-const User = require("../models/taskModel");
 const bcrypt = require('bcrypt')
+const {User}=require('../models/signupModel')
 const jwt = require('jsonwebtoken')
 const secretKey = process.env.secretToken
+
 exports.createUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
         if (!(userName && email && password)) {
-            res.status(400).send('All fields are compulsory')
+            return res.status(400).send('All fields are compulsory')
         }
-
-        const existingUser = await User.findOne({ email })
+        const existingUser = await User.findOne({ where: { email: email } })
         if (existingUser) {
-            res.status(401).send('User already exist')
+            return res.status(401).send('User already exist')
+        } else {
             const hashedpassword = await bcrypt.hash(password, 10)
-
             const user = await User.create({
                 userName,
                 email,
                 password: hashedpassword
             })
-            
-            let token = jwt.sign({ name: 'jayesh' }, '', { expiresIn: '1d' })
-            user.token = token
-            user.password = null
 
+            let token = jwt.sign({ id: user.id }, 'anykey')
+            user["token"] = token
+            user["password"] = null
 
-            res.status.json(user)
-
+            return res.status(200).send({ user, token })
         }
     } catch (error) {
-        console.log(error);
-
+        return res.send(error)
     }
 
 }
