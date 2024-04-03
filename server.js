@@ -12,8 +12,7 @@ app.use(cors())
 const db=require('./configs/dbConfig')
 db.dbConnect()
 
-require('./routes/signupRoute')(app)
-
+require('./routes/authRoute')(app)
 
 app.listen(serverConfig.PORT, () => {
     console.log(`Server is running up and down by PORT: ${serverConfig.PORT}`);

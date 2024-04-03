@@ -3,6 +3,7 @@ const sequelize = require('sequelize')
 const dbInstance = new sequelize('task_application', 'root', 'toor', {
     host: 'localhost',
     dialect: 'mysql',
+    logging:false,
     pool: {
         operatorAliases: 0,
         max: 5,

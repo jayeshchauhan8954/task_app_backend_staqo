@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+const { DataTypes,Sequelize } = require('sequelize')
 const { dbInstance } = require('../configs/dbConfig')
 
 const User = dbInstance.define('user', {
@@ -22,7 +22,7 @@ const User = dbInstance.define('user', {
         defaultValue: 'active'
     }
 })
-User.sync({alter:true})
+User.sync()
 
 module.exports = {
     User
