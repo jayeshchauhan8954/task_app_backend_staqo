@@ -23,11 +23,9 @@ const Task = dbInstance.define('task', {
     status: {
         type: DataTypes.STRING,
         enum: ["inProgress", "onHold", "closed"],
-        default:"inProgress"
+        default: "inProgress"
     }
 })
 Task.sync()
 
-module.exports = {
-    Task
-}
+module.exports = { Task }
