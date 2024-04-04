@@ -1,8 +1,7 @@
-const dotenv = require('dotenv').config();
 const bcrypt = require('bcrypt')
 const { User } = require('../models/User')
-const jwt = require('jsonwebtoken')
-const secretKey = process.env.secretToken
+const jwt = require('jsonwebtoken');
+const { _auth } = require('../configs');
 
 exports.createUser = async (req, res) => {
     try {
@@ -15,7 +14,7 @@ exports.createUser = async (req, res) => {
             return res.status(401).send('User already exist')
         } else {
             const hashedpassword = await bcrypt.hash(password, 10)
-            const user = await User.create({
+            const user = User.create({
                 userName: userName,
                 email: email,
                 password: hashedpassword
@@ -44,13 +43,13 @@ exports.login = async (req, res) => {
         const user = await User.findOne({ where: { email } })
         if (!user) {
             return res.status(400).send('user doesn,t exist')
-            
+
         }
         let comparePassword = await bcrypt.compare(password, user.password)
         if (comparePassword) {
-            const token = jwt.sign({ id:user.id },'randomkey')
-            return res.status(200).send({token})
-        }else{
+            const token = jwt.sign({ id: user.id }, _auth.jwtSecretKey)
+            return res.status(200).send({ token })
+        } else {
             return res.status(400).send('incorrect password')
 
         }
@@ -66,10 +65,8 @@ exports.updatedUser = async (req, res) => {
         let updatedUser = {
             userName,
         }
-        await User.update(updatedUser, {
-            where: { id:req.user_id }
-        });
-        const user = await User.findOne({ where: {id:req.user_id } })
+
+        const user = await User.findOne({ where: { id: req.user_id } })
         if (!user) {
             return res.status(404).send('User not found')
         }
@@ -83,12 +80,13 @@ exports.updatedUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        let { id } = req.body;
+        // let { id } = req.body;
+        let user_id = req.user_id
         const user = await User.update({
             status: 'inactive'
         },
             {
-                where: { id }
+                where: { id :user_id }
             })
         return res.status(400).send(user)
     } catch (error) {
