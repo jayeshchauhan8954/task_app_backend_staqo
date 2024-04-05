@@ -2,6 +2,12 @@ const { DataTypes,Sequelize } = require('sequelize')
 const { dbInstance } = require('../configs/dbConfig')
 
 const User = dbInstance.define('user', {
+    id: {
+        type: DataTypes.INTEGER.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+
     userName: {
         type: DataTypes.STRING,
         alowNull: false,

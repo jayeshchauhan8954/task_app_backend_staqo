@@ -10,22 +10,21 @@ const Task = dbInstance.define('task', {
     },
 
     user_id: {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER.UNSIGNED
     },
     title: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING(200),
+        allowNull:false
     },
     description: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING(500)
+
     },
     start_from: {
-        type: DataTypes.STRING
+        type: DataTypes.DATE
     },
     end_to: {
-        type: DataTypes.STRING
-    },
-    created_at: {
-        type: DataTypes.STRING
+        type: DataTypes.DATE
     },
     status: {
         type: DataTypes.STRING,
@@ -33,6 +32,6 @@ const Task = dbInstance.define('task', {
         default: "inProgress"
     }
 })
-Task.sync()
+// Task.sync({alter:true})
 
 module.exports = { Task }
