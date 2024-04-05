@@ -14,7 +14,7 @@ exports.createUser = async (req, res) => {
             return res.status(401).send('User already exist')
         } else {
             const hashedpassword = await bcrypt.hash(password, 10)
-            const user = User.create({
+            const user = await User.create({
                 userName: userName,
                 email: email,
                 password: hashedpassword
@@ -62,14 +62,14 @@ exports.login = async (req, res) => {
 exports.updatedUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
-        let updatedUser = {
-            userName,
-        }
+        let updatedUser = { userName }
 
         const user = await User.findOne({ where: { id: req.user_id } })
         if (!user) {
             return res.status(404).send('User not found')
         }
+        user.userName = updatedUser.userName
+        await user.save()
         return res.status(200).send({ message: 'User updated', user })
     } catch (error) {
         return res.status(500).send({ error: error.message })
@@ -86,7 +86,7 @@ exports.deleteUser = async (req, res) => {
             status: 'inactive'
         },
             {
-                where: { id :user_id }
+                where: { id: user_id }
             })
         return res.status(400).send(user)
     } catch (error) {

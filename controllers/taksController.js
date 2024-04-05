@@ -37,10 +37,10 @@ exports.getAllTask = async (req, res) => {
     }
 }
 
-exports.updateTask=async(req,res)=>{
-    try {
+// exports.updateTask=async(req,res)=>{
+//     try {
         
-    } catch (error) {
+//     } catch (error) {
         
-    }
-}
+//     }
+// }
