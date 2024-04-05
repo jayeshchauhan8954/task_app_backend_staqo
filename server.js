@@ -12,6 +12,8 @@ app.use(cors())
 const db=require('./configs/dbConfig')
 db.dbConnect()
 
+
+
 require('./routes/authRoute')(app)
 require('./routes/taskRoute')(app)
 

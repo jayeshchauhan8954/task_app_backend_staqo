@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt')
 const { User } = require('../models/User')
 const jwt = require('jsonwebtoken');
 const { _auth } = require('../configs');
+const { sendMail } = require('./node_mailer');
 
 exports.createUser = async (req, res) => {
     try {
@@ -80,7 +81,6 @@ exports.updatedUser = async (req, res) => {
 
 exports.deleteUser = async (req, res) => {
     try {
-        // let { id } = req.body;
         let user_id = req.user_id
         const user = await User.update({
             status: 'inactive'
@@ -91,6 +91,37 @@ exports.deleteUser = async (req, res) => {
         return res.status(400).send(user)
     } catch (error) {
         return res.send(error)
+
+    }
+}
+
+exports.sendMailForFogotPass = async (req, res) => {
+    try {
+        const { email } = req.body
+        if(!email){
+            return res.status(404).send({message:'email is required '})
+        }
+        const user = await User.findOne({
+            where: {
+                email
+            }
+        })
+        if (!user) {
+            return res.status(400).send({ message: `user does'nt exist` })
+        }
+        let newPassword = 'deffed' + user.userName + 'abccba'
+        user.password = await bcrypt.hash(newPassword, 10)
+        await user.save()
+        const mailTemplate = `
+    Hello ${user.userName},
+    Your password has been updated and now 
+    your password is <h2 style={{color:'green'}}>${newPassword}</h2>.
+    Kindly reset your password as per your convience
+    `
+        await sendMail(user.email, 'Fogot Password', mailTemplate)
+        return res.status(200).send({ message: 'Mail send successfully' })
+    } catch (error) {
+        return res.status(400).send({ message: error.message })
 
     }
 }
