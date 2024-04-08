@@ -25,13 +25,13 @@ module.exports = {
                 html: body
             };   
             try {
-                transporter.verify(function (error, success) {
-                    if (error) {
-                        console.log(error);
-                    } else {
-                        console.log("Server is ready send E-mails", success);
-                    }
-                });
+                // transporter.verify(function (error, success) {
+                //     if (error) {
+                //         console.log(error);
+                //     } else {
+                //         console.log("Server is ready send E-mails", success);
+                //     }
+                // });
                 transporter.sendMail(mailOptions, function (err, info) {
                     if (err) {
                         return err.message;

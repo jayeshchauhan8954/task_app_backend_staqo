@@ -1,5 +1,5 @@
 const { Task } = require('../models/task')
-const { sendMail } = require('./node_mailer')
+const { sendMail } = require('../utils/node_mailer')
 exports.createTask = async (req, res) => {
     try {
         const { title, description, start_from, end_to } = req.body

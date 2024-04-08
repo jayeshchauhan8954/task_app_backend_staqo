@@ -2,8 +2,9 @@ const bcrypt = require('bcrypt')
 const { User } = require('../models/User')
 const jwt = require('jsonwebtoken');
 const { _auth } = require('../configs');
-const { sendMail } = require('./node_mailer');
-
+const { sendMail } = require('../utils/node_mailer');
+const { comparePassword } = require('../utils/comparePassword');
+const { Op } = require('sequelize');
 exports.createUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
@@ -100,8 +101,8 @@ exports.deleteUser = async (req, res) => {
 exports.sendMailForFogotPass = async (req, res) => {
     try {
         const { email } = req.body
-        if(!email){
-            return res.status(404).send({message:'email is required '})
+        if (!email) {
+            return res.status(404).send({ message: 'email is required ' })
         }
         const user = await User.findOne({
             where: {
@@ -113,6 +114,7 @@ exports.sendMailForFogotPass = async (req, res) => {
         }
         let newPassword = 'deffed' + user.userName + 'abccba'
         user.password = await bcrypt.hash(newPassword, 10)
+
         await user.save()
         const mailTemplate = `
     Hello ${user.userName},
@@ -125,5 +127,31 @@ exports.sendMailForFogotPass = async (req, res) => {
     } catch (error) {
         return res.status(400).send({ message: error.message })
 
+    }
+}
+
+
+exports.resetPassword = async (req, res) => {
+    // const user_id=req.user_id
+    try {
+        const { user_id } = req;
+        const { email, password, newPassword } = req.body;
+        if (!email || !password || !newPassword) {
+            return res.status(400).send({ message: 'all fields are required' })
+        }
+        const user = await User.findOne({ where: { email } })
+        if (!user) {
+            return res.status(400).send({ message: 'user not found' })
+        }
+
+        let result = await bcrypt.compare(password, user.password)
+        if (!result) {
+            return res.status(400).send({ message: "invalid password" })
+        }
+        user.password = await bcrypt.hash(newPassword, 10)
+        await user.save()
+        return res.status(201).send({ message: "password reset successfully!" })
+    } catch (error) {
+        return res.status(500).send({ error: error.message })
     }
 }

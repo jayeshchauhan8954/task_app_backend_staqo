@@ -1,6 +1,6 @@
 const { DataTypes, sequelize } = require('sequelize')
 const { dbInstance } = require('../configs/dbConfig')
-const { sendMail } = require('../controllers/node_mailer')
+const { sendMail } = require('../utils/node_mailer')
 
 const Task = dbInstance.define('task', {
     id: {
