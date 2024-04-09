@@ -1,3 +1,4 @@
+const { status } = require('init')
 const { Task } = require('../models/task')
 const { sendMail } = require('../utils/node_mailer')
 exports.createTask = async (req, res) => {
@@ -14,7 +15,7 @@ exports.createTask = async (req, res) => {
             end_to
         })
         let respond = await record.save()
-        return res.status(201).send({ message: 'task created', data: respond })
+        return res.status(200).send({ message: 'task created', data: respond })
     } catch (error) {
         return res.status(500).send('unable to create')
 
@@ -28,7 +29,7 @@ exports.getAllTask = async (req, res) => {
             where: {
                 user_id: req.user_id
             },
-            attributes: ['id', 'title']
+            attributes: ['id', 'title', 'description','user_id', 'start_from', 'end_to']
 
         })
         return res.status(200).send({ message: 'find all users', data: task })
@@ -40,24 +41,27 @@ exports.getAllTask = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     try {
-        const {id}  = req.params;
-        let { title, description, end_to } = req.body
-        let recordToUpadate = {
-            title,
-            description,
-            end_to
-        }
-
-        let record = await Task.update(recordToUpadate, {
+        const { id } = req.params;
+        let { title, description, end_to, status = 'inProgress' } = req.body
+        let task = await Task.findOne({
             where: {
-                user_id: req.user_id,
-                id
+                id,
+                user_id: req.user_id
             }
         })
-        return res.status(201).send({ message: 'task updaded', data: record })
+        if (!task) {
+
+            return res.status(400).send({ message: 'task not found' })
+        }
+        task.title = title ? title : task.title
+        task.description = description ? description : task.description
+        task.status = status ? status : task.status
+        task.end_to = end_to ? end_to : task.end_to
+        await task.save()
+        return res.status(201).send({ message: 'task updaded', data: task })
 
     } catch (error) {
-        return res.status().send({ message: error.message })
+        return res.status(500).send({ message: error.message })
 
     }
 }

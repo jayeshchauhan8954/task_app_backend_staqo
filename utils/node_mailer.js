@@ -1,4 +1,3 @@
-'use strict';
 const { mailer } = require('../configs/index');
 const nodemailer = require('nodemailer');
 

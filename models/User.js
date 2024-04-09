@@ -7,7 +7,6 @@ const User = dbInstance.define('user', {
         primaryKey: true,
         autoIncrement: true,
     },
-
     userName: {
         type: DataTypes.STRING,
         alowNull: false,
@@ -25,10 +24,11 @@ const User = dbInstance.define('user', {
     },
     status: {
         type: DataTypes.STRING,
-        defaultValue: 'active'
+        defaultValue: 'active',
+        enum:["active","inactive"]
     }
 })
-User.sync()
+// User.sync()
 
 module.exports = {
     User
