@@ -9,7 +9,7 @@ const serverConfig = require("./configs/serverConfig")
 app.use(bodyParser.json())
 app.use(cors())
 
-const db=require('./configs/dbConfig')
+const db = require('./configs/dbConfig')
 db.dbConnect()
 
 

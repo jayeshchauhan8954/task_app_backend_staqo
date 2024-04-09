@@ -3,7 +3,7 @@ const verifyToken = function (req, res, next) {
 
     var authorization = req.headers['authorization'];
     if (authorization) {
-        console.log('authorization', authorization);
+        // console.log('authorization', authorization);
         var tokenBearer = authorization.split(' ');
         var token = tokenBearer[1];
 
@@ -12,7 +12,7 @@ const verifyToken = function (req, res, next) {
                 return res.status(403).send('unauthorized');
             }
             else {
-           console.log(decoded);
+        //    console.log(decoded);
            req.user_id=decoded.id
                 next();
             }

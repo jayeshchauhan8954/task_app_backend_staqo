@@ -13,8 +13,8 @@ exports.createTask = async (req, res) => {
             start_from,
             end_to
         })
-        let respond = await record.save()
-        return res.status(201).send({ message: 'task created', data: respond })
+        await record.save()
+        return res.status(201).send({ message: 'task created', data: record })
     } catch (error) {
         return res.status(500).send('unable to create')
 
@@ -28,7 +28,7 @@ exports.getAllTask = async (req, res) => {
             where: {
                 user_id: req.user_id
             },
-            attributes: ['id', 'title']
+            attributes: ['id', 'title','user_id']
 
         })
         return res.status(200).send({ message: 'find all users', data: task })
@@ -40,13 +40,14 @@ exports.getAllTask = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     try {
-        const {id}  = req.params;
+        const { id } = req.params;
         let { title, description, end_to } = req.body
         let recordToUpadate = {
             title,
             description,
             end_to
         }
+
 
         let record = await Task.update(recordToUpadate, {
             where: {
@@ -71,7 +72,11 @@ exports.taskGetById = async (req, res) => {
                 id
             }
         })
-        return res.status(201).send({ message: 'task updaded', data: record })
+
+        if (!record) {
+            return res.status(404).send({message:"task is not found"})
+        }
+        return res.status(201).send({ message: 'task fatched successfully', data: record })
 
     } catch (error) {
         return res.status().send({ message: error.message })

@@ -30,7 +30,7 @@ const Task = dbInstance.define('task', {
     status: {
         type: DataTypes.STRING,
         enum: ["inProgress", "onHold", "closed"],
-        default: "inProgress"
+        defaultValue: "inProgress"
     }
 })
 // Task.sync({alter:true})

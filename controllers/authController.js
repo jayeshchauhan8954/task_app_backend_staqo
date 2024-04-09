@@ -34,7 +34,6 @@ exports.createUser = async (req, res) => {
 
 }
 
-
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -61,6 +60,7 @@ exports.login = async (req, res) => {
 
     }
 }
+
 exports.updatedUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
@@ -79,17 +79,12 @@ exports.updatedUser = async (req, res) => {
 
 }
 
-
 exports.deleteUser = async (req, res) => {
     try {
-        let user_id = req.user_id
-        const user = await User.update({
+        await User.update({
             status: 'inactive'
-        },
-            {
-                where: { id: user_id }
-            })
-        return res.status(400).send(user)
+        }, { where: { id: req.user_id } })
+        return res.status(400).send({ message: 'User deleted successfully' })
     } catch (error) {
         return res.send(error)
 
@@ -127,7 +122,6 @@ exports.sendMailForFogotPass = async (req, res) => {
 
     }
 }
-
 
 exports.resetPassword = async (req, res) => {
     // const user_id=req.user_id
