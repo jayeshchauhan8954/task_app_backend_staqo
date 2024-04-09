@@ -1,4 +1,3 @@
-const { status } = require('init')
 const { Task } = require('../models/task')
 const { sendMail } = require('../utils/node_mailer')
 exports.createTask = async (req, res) => {
