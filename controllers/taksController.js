@@ -75,7 +75,11 @@ exports.taskGetById = async (req, res) => {
                 id
             }
         })
-        return res.status(201).send({ message: 'task updaded', data: record })
+
+        if (!record) {
+            return res.status(404).send({message:"task is not found"})
+        }
+        return res.status(201).send({ message: 'task fatched successfully', data: record })
 
     } catch (error) {
         return res.status().send({ message: error.message })

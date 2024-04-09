@@ -14,8 +14,8 @@ exports.createUser = async (req, res) => {
         if (!(userName && email && password)) {
             return res.status(400).send('All fields are compulsory')
         }
-        if(!validator.isEmail(email)){
-            return res.status(400).send({message:'Invalid email'})
+        if (!validator.isEmail(email)) {
+            return res.status(400).send({ message: 'Invalid email' })
         }
         const existingUser = await User.findOne({ where: { email: email } })
         if (existingUser) {
@@ -40,7 +40,6 @@ exports.createUser = async (req, res) => {
 
 }
 
-
 exports.login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -56,9 +55,9 @@ exports.login = async (req, res) => {
         let comparePassword = await bcrypt.compare(password, user.password)
         if (comparePassword) {
             const token = jwt.sign({ id: user.id }, _auth.jwtSecretKey)
-            let response={
-                userName:user.userName,
-                email:user.email,
+            let response = {
+                userName: user.userName,
+                email: user.email,
                 token
             }
             return res.status(200).send(response)
@@ -72,6 +71,7 @@ exports.login = async (req, res) => {
 
     }
 }
+
 exports.updatedUser = async (req, res) => {
     try {
         let { userName, email, password } = req.body;
@@ -91,7 +91,6 @@ exports.updatedUser = async (req, res) => {
 
 }
 
-
 exports.deleteUser = async (req, res) => {
     try {
         let user_id = req.user_id
@@ -101,7 +100,7 @@ exports.deleteUser = async (req, res) => {
             {
                 where: { id: user_id }
             })
-        return res.status(400).send({message:'user deleted successfully'})
+        return res.status(400).send({ message: 'user deleted successfully' })
     } catch (error) {
         return res.send(error)
 
@@ -139,7 +138,6 @@ exports.sendMailForFogotPass = async (req, res) => {
 
     }
 }
-
 
 exports.resetPassword = async (req, res) => {
     // const user_id=req.user_id
